@@ -48,27 +48,28 @@ public class JWTUtil {
         }
     }
 
-    public Map<String, Object> paresJWT(Integer role, String jwtToken) throws ErrorTokenException {
+    public Map<String, Object> paresJWT(String jwtToken) throws ErrorTokenException {
         if (!jwtToken.startsWith(jwtProperties.getAdminTokenPrefix()) && !jwtToken.startsWith(jwtProperties.getUserTokenPrefix())) {
             throw new ErrorTokenException();
         }
+        int role;
         if(jwtToken.startsWith(jwtProperties.getUserTokenPrefix())){
             jwtToken = jwtToken.replace(jwtProperties.getUserTokenPrefix(), "");
+            role = 0;
         } else {
             jwtToken = jwtToken.replace(jwtProperties.getAdminTokenName(), "");
+            role = 1;
         }
         if(role == 0){
-            Claims claims = Jwts.parser()
+            return Jwts.parser()
                     .setSigningKey(jwtProperties.getUserSecretKey().getBytes(StandardCharsets.UTF_8))
-                    .parseClaimsJwt(jwtToken)
+                    .parseClaimsJws(jwtToken)
                     .getBody();
-            return (Map<String, Object>) claims;
         } else {
-            Claims claims = Jwts.parser()
+            return Jwts.parser()
                     .setSigningKey(jwtProperties.getAdminSecretKey().getBytes(StandardCharsets.UTF_8))
-                    .parseClaimsJwt(jwtToken)
+                    .parseClaimsJws(jwtToken)
                     .getBody();
-            return (Map<String, Object>) claims;
         }
     }
 }

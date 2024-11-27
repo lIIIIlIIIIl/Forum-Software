@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import di0retsa.userlogin.entity.User;
 import di0retsa.userlogin.entity.dto.UserLoginDTO;
 import di0retsa.userlogin.entity.exception.*;
+import di0retsa.userlogin.entity.vo.UserAuthorizationVO;
 import di0retsa.userlogin.entity.vo.UserLoginVO;
 import di0retsa.userlogin.mapper.UserMapper;
 import di0retsa.userlogin.service.UserLoginService;
@@ -119,6 +120,23 @@ public class UserLoginServiceImpl implements UserLoginService {
                 .build();
         userMapper.insert(newUser);
         return newUser;
+    }
+
+    /**
+     * JWTToken校验
+     * @param jwtToken JWT令牌
+     * @return 校验不通过:null 校验通过:userAuthorizationVO
+     */
+    @Override
+    public UserAuthorizationVO userAuthorize(String jwtToken) throws Throwable {
+        Map<String, Object> map = jwtUtil.paresJWT(jwtToken);
+        return map.isEmpty()
+                ? null
+                : UserAuthorizationVO.builder()
+                    .username((String) map.get("username"))
+                    .userId((String) map.get("userId"))
+                    .role((Integer) map.get("role"))
+                    .build();
     }
 
     // TODO:修改密码重载

@@ -81,4 +81,18 @@
   - JWTUtil: JWT Token生成/解析工具类
 
 ## 接口说明
-**暂未开放任何接口**
+**Token解析接口(POST)**
+
+示例请求
+``` 示例请求
+http://SERVER_IP:PORT/api/auth/token?token=YOUR_TOKEN
+```
+
+响应结果
+``` 响应结果
+{
+    "username": String,
+    "userId": String,
+    "role": Integer
+}
+```
